@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import './App.css'
 
 function Login() {
@@ -18,29 +19,18 @@ function Login() {
     setError('') // Clear error on typing
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    // Get users from localStorage
-    const users = JSON.parse(localStorage.getItem('users') || '[]')
-    
-    // Check if user exists
-    const user = users.find(u => u.username === formData.username)
-    
-    if (!user) {
-      setError('Please register')
-      return
+    try {
+      const response = await axios.post('http://localhost:8000/api/login/', formData)
+      console.log('Login Successful:', response.data)
+      localStorage.setItem('currentUser', JSON.stringify(response.data))
+      navigate('/dashboard')
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.error)
+      }
     }
-
-    if (user.password !== formData.password) {
-      setError('Wrong password')
-      return
-    }
-
-    // Success
-    console.log('Login successful for:', formData.username)
-    localStorage.setItem('currentUser', JSON.stringify(user)) // Store session
-    navigate('/dashboard')
   }
 
   return (
@@ -57,7 +47,7 @@ function Login() {
               onChange={handleChange} 
               required 
               placeholder="Enter your username"
-              className={error === 'Please register' ? 'input-error' : ''}
+              className={error === 'No user found' ? 'input-error' : ''}
             />
           </div>
 

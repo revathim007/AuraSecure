@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import './App.css'
 
 function Registration() {
@@ -68,21 +69,30 @@ function Registration() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (validate()) {
-      // Simulation: Persist user to localStorage for login check
-      const users = JSON.parse(localStorage.getItem('users') || '[]')
-      // Check if username already exists
-      if (users.find(u => u.username === formData.username)) {
-        setErrors({ username: 'Username already taken' })
-        return
+      try {
+        const response = await axios.post('http://localhost:8000/api/register/', {
+          full_name: formData.fullName,
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+          contact: formData.contactNumber
+        })
+        console.log('Registration Successful:', response.data)
+        navigate('/login')
+      } catch (error) {
+        if (error.response && error.response.data) {
+          // Map backend errors to frontend state
+          const backendErrors = error.response.data
+          let newErrors = {}
+          for (const key in backendErrors) {
+            newErrors[key] = backendErrors[key][0]
+          }
+          setErrors(newErrors)
+        }
       }
-      users.push(formData)
-      localStorage.setItem('users', JSON.stringify(users))
-      
-      console.log('Registration Data Persisted:', formData)
-      navigate('/login') // Navigate to login page on success
     }
   }
 

@@ -13,6 +13,7 @@ function Dashboard() {
   return (
     <div className="dashboard-container">
       <div className="dashboard-card">
+        
         <h1 className="dashboard-title">AURASECURE Dashboard</h1>
         <p className="dashboard-msg">Dashboard</p>
         <div className="user-info">
@@ -20,7 +21,7 @@ function Dashboard() {
           <p>Email: {user.email}</p>
           <p>Contact: {user.contactNumber}</p>
         </div>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+
       </div>
     </div>
   )

@@ -116,3 +116,68 @@ This document tracks all changes with deep technical insights for interview prep
   - Replaced the default SQLite `DATABASES` configuration with a new `mssql` engine setup.
   - Configured the connection with `ODBC Driver 18 for SQL Server`, `Encrypt=yes`, and a `Timeout` of 30 seconds, following Azure best practices.
 - **Architectural Impact**: This migration transitions the project from a development-centric file-based database to a scalable, secure, and cloud-ready relational database, making it suitable for deployment on an Azure VM.
+
+#### **2026-04-01 13:30:00 | Backend | Model Integration & Registration API**
+- **Action**: Integrated existing Azure SQL tables into Django and implemented a secure user registration API.
+- **Technical Detail - Model Generation**:
+  - Created `api/models.py` using the output of `inspectdb` to map to the existing database schema.
+  - Set `managed = False` in the model `Meta` classes to prevent Django from altering the existing tables.
+- **Technical Detail - Serialization & Security**:
+  - Implemented `api/serializers.py` with a `UserSerializer` for the `Users` model.
+  - Overrode the `create` method in the serializer to automatically hash passwords using `make_password` before saving them to the database.
+- **Technical Detail - API Endpoint**:
+  - Created a `register_user` view in `api/views.py` that uses the `UserSerializer` to validate and create new users.
+  - Established a new API endpoint at `api/register/` by creating `api/urls.py` and including it in the project's root URL configuration.
+- **Architectural Impact**: This step fully integrates the Django backend with the existing data, enabling secure, ORM-driven interactions and providing a robust foundation for future feature development.
+
+#### **2026-04-01 13:45:00 | Full-Stack | Registration Integration**
+- **Action**: Connected the frontend registration form to the backend API, completing the full-stack user registration flow.
+- **Technical Detail - API Call**:
+  - Implemented an `async/await` function in `Registration.jsx` to handle the form submission.
+  - Used `axios.post` to send the form data to the `http://localhost:8000/api/register/` endpoint.
+- **Technical Detail - Data Mapping**:
+  - Mapped the frontend's camelCase `formData` (e.g., `fullName`) to the backend's snake_case `UserSerializer` fields (e.g., `full_name`) in the request payload.
+- **Technical Detail - Error Handling**:
+  - Wrapped the API call in a `try...catch` block to gracefully handle network errors or backend validation failures.
+  - Implemented logic to parse validation errors from the backend response and display them in the frontend UI, ensuring a seamless user experience.
+- **Architectural Impact**: This completes the end-to-end registration feature, where a user can securely sign up through the frontend, have their data validated by both client and server, and have it persisted in the Azure SQL database with a hashed password.
+
+#### **2026-04-01 14:00:00 | Full-Stack | Login Authentication**
+- **Action**: Implemented a full-stack login system that authenticates against the Azure SQL database.
+- **Technical Detail - Backend API**:
+  - Created a new `api/login/` endpoint in `api/views.py` to handle user authentication.
+  - Implemented a `try...except` block to gracefully handle `Users.DoesNotExist` errors, returning a `404 Not Found` with a "No user found" message.
+  - Used Django's `check_password` function to securely compare the provided password with the hashed password in the database.
+- **Technical Detail - Frontend Integration**:
+  - Updated `Login.jsx` to send a `POST` request to the new `api/login/` endpoint.
+  - Replaced the `localStorage` simulation with a real API call, completing the full-stack authentication flow.
+  - Implemented error handling to display specific messages from the backend, such as "No user found" or "Wrong password".
+- **Architectural Impact**: This feature establishes a secure and complete authentication cycle. Users can now register, have their data stored in a production database, and log in with their credentials, with the backend managing the entire authentication process.
+
+#### **2026-04-01 14:15:00 | Backend | Enhanced Registration Validation**
+- **Action**: Refined the registration API to provide explicit feedback for non-unique fields.
+- **Technical Detail - Unique Field Validation**:
+  - Leveraged Django REST Framework's built-in validators, which automatically check the `unique=True` constraint on the `username` and `email` fields in the `Users` model.
+  - When a user attempts to register with an existing username or email, the API now returns a `400 Bad Request` with a specific error message (e.g., "A user with that username already exists.").
+- **Technical Detail - Security Note**:
+  - Intentionally avoided implementing a "password is taken" check, as this is a significant security vulnerability that could lead to password enumeration attacks. The system's security relies on password strength and hashing, not uniqueness.
+- **Architectural Impact**: This enhancement makes the registration process more robust and user-friendly by providing clear, actionable error messages while adhering to security best practices.
+
+#### **2026-04-01 14:30:00 | Frontend | Theming and UI Refinement**
+- **Action**: Implemented a new color theme and refined the UI.
+- **Technical Detail - CSS Variables**: Defined a new color palette in `index.css` using CSS variables for easy theme management.
+- **Technical Detail - Dark Mode**: Implemented a dark mode using the `prefers-color-scheme` media query.
+- **Technical Detail - Component Styling**: Updated `App.css` to use the new CSS variables, ensuring a consistent look and feel across the application.
+
+#### **2026-04-01 14:45:00 | Frontend | Navigation and Dashboard Enhancements**
+- **Action**: Added a persistent navigation bar and a new "Hazard Detection" page.
+- **Technical Detail - Header Component**: Created a `Header.jsx` component to house the navigation bar, ensuring it appears on every page except the homepage.
+- **Technical Detail - Routing**: Added a new route for the `/hazard-detection` page in `main.jsx`.
+- **Technical Detail - Conditional Rendering**: Used the `useLocation` hook from `react-router-dom` to conditionally render the `Header` component based on the current URL.
+
+#### **2026-04-01 15:00:00 | Full-Stack | Sensor Data Submission**
+- **Action**: Implemented the functionality to save sensor data from the "Hazard Detection" page to the database.
+- **Technical Detail - Backend API**: Created a new `api/user-input-sensor-data/` endpoint to handle the creation of new sensor data entries.
+- **Technical Detail - Serializer**: Created a `UserInputSensorDataSerializer` to validate and serialize the incoming sensor data.
+- **Technical Detail - Frontend Integration**: Modified `HazardDetection.jsx` to send the sensor data to the new API endpoint when the "Detect Hazard" button is clicked.
+- **Technical Detail - Validation**: Implemented comprehensive client-side validation in `HazardDetection.jsx` to ensure the data is in the correct format before being sent to the backend.
