@@ -103,3 +103,16 @@ This document tracks all changes with deep technical insights for interview prep
   - Added a "Already have an account? Login" clickable label in [Registration.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/Registration.jsx) to improve the bidirectional navigation flow between authentication pages.
 - **Technical Detail - Routing Expansion**:
   - Added the `/dashboard` route to the application's main route configuration.
+
+#### **2026-04-01 13:15:00 | Backend | Database Migration to Azure SQL**
+- **Action**: Upgraded the backend database from SQLite to a production-ready Azure SQL Database.
+- **Technical Detail - Dependency Management**:
+  - Installed `mssql-django`, `pyodbc`, and `python-dotenv`.
+  - Updated `requirements.txt` to ensure these packages are included in future deployments.
+- **Technical Detail - Secure Configuration**:
+  - Created a `.env` file in the `backend/` directory to store sensitive database credentials (DB_NAME, DB_USER, etc.), keeping them out of version control.
+- **Technical Detail - Settings Refactor**:
+  - Integrated `python-dotenv` in `settings.py` to load environment variables at runtime using `load_dotenv()`.
+  - Replaced the default SQLite `DATABASES` configuration with a new `mssql` engine setup.
+  - Configured the connection with `ODBC Driver 18 for SQL Server`, `Encrypt=yes`, and a `Timeout` of 30 seconds, following Azure best practices.
+- **Architectural Impact**: This migration transitions the project from a development-centric file-based database to a scalable, secure, and cloud-ready relational database, making it suitable for deployment on an Azure VM.
