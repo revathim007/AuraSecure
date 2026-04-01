@@ -180,4 +180,34 @@ This document tracks all changes with deep technical insights for interview prep
 - **Technical Detail - Backend API**: Created a new `api/user-input-sensor-data/` endpoint to handle the creation of new sensor data entries.
 - **Technical Detail - Serializer**: Created a `UserInputSensorDataSerializer` to validate and serialize the incoming sensor data.
 - **Technical Detail - Frontend Integration**: Modified `HazardDetection.jsx` to send the sensor data to the new API endpoint when the "Detect Hazard" button is clicked.
-- **Technical Detail - Validation**: Implemented comprehensive client-side validation in `HazardDetection.jsx` to ensure the data is in the correct format before being sent to the backend.
+- Technical Detail - Validation: Implemented comprehensive client-side validation in `HazardDetection.jsx` to ensure the data is in the correct format before being sent to the backend.
+
+#### **2026-04-01 16:15:00 | Machine Learning | Gradient Boosting Hazard Detection**
+- **Action**: Upgraded the hazard detection system from a simple threshold-based check to a multi-tiered predictive model.
+- **Technical Detail - Dependency Management**: Added `scikit-learn` and `joblib` to `requirements.txt` to support advanced ML algorithms and model serialization.
+- **Technical Detail - Advanced Modeling**: 
+  - Implemented a `GradientBoostingClassifier` in [train_model.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/ml/train_model.py) to identify complex "at-risk" patterns in sensor data.
+  - Defined a three-tier classification system: **Safe (0)**, **Warning (1)**, and **Alarm (2)**.
+- **Technical Detail - Data Engineering**:
+  - Engineered the target variable using `numpy.select` based on specific risk thresholds:
+    - **Alarm**: Gas > 250, Smoke > 15, or Temp > 90.
+    - **Warning**: Gas > 200, Smoke > 10, or Temp > 75 (excluding Alarms).
+    - **Safe**: All other readings.
+- **Architectural Impact**: This shift from hardcoded rules to a trained model allows for proactive risk mitigation by flagging "Warning" states before they escalate into critical alarms.
+
+#### **2026-04-01 16:30:00 | Backend | Descriptive & Actionable API Responses**
+- **Action**: Enhanced the `predict_hazard` API to provide meaningful context and emergency instructions.
+- **Technical Detail - Reason Extraction**: Developed a `get_prediction_reason` function in [views.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/api/views.py) that dynamically identifies which specific sensors (Gas, Smoke, or Temp) triggered the current status.
+- **Technical Detail - Actionable Statements**: Added a `statement` field to the API response, providing users with immediate instructions (e.g., "EVACUATE IMMEDIATELY!" for Alarms or "Monitor levels closely" for Warnings).
+- **Technical Detail - Multi-Value Logic**: Implemented `{' and '.join(reasons)}` to handle scenarios where multiple sensors are simultaneously elevated, ensuring clear and accurate reporting.
+
+#### **2026-04-01 16:45:00 | Frontend | Proactive Safety UI/UX**
+- **Action**: Overhauled the "Hazard Detection" interface to emphasize status visibility and emergency instructions.
+- **Technical Detail - Visual Hierarchy**:
+  - Integrated **Lucide Icons** (`AlertCircle`, `AlertTriangle`, `ShieldCheck`) in [HazardDetection.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/HazardDetection.jsx) for instant cognitive recognition of safety status.
+  - Implemented a severity-based color system: Green (Safe), Yellow (Warning), and Red (Alarm).
+- **Technical Detail - UI Polish**:
+  - Added a **pulsing CSS animation** for the "Alarm" statement to capture the user's attention during critical hazards.
+  - Implemented conditional CSS classes in [App.css](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/App.css) to apply distinct borders and backgrounds for each status summary.
+- **Technical Detail - Validation Update**: Relaxed the temperature validation threshold to 100°C to accommodate high-risk monitoring scenarios.
+- **Architectural Impact**: The UI now acts as a proactive safety dashboard rather than just a data entry form, providing users with both the "What" (Status) and the "Why" (Reason) alongside clear instructions on the "How" (Action).
