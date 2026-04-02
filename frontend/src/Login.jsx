@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Lock } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
@@ -34,9 +35,12 @@ function Login() {
   }
 
   return (
-    <div className="registration-container">
-      <div className="registration-card">
-        <h2 className="registration-title">AURASECURE Login</h2>
+    <div className="registration-container app-container">
+      <div className="login-card">
+        <h2 className="registration-title">
+          <Lock size={24} className="lock-icon" /> AURASECURE
+        </h2>
+        <p className="registration-subtitle">Login to your safety portal</p>
         <form onSubmit={handleSubmit} className="registration-form">
           <div className="form-group">
             <label>Username</label>
@@ -66,9 +70,17 @@ function Login() {
 
           {error && <div className="login-error-msg">{error}</div>}
 
-          <button type="submit" className="submit-btn">Login</button>
+          <button type="submit" className="submit-btn register-submit">Login</button>
         </form>
-        <button className="back-btn" onClick={() => navigate('/registration')}>Don't have an account? Register</button>
+
+        <div className="form-footer">
+          <button className="login-link-btn" onClick={() => navigate('/registration')}>
+            Don't have an account? <span>Register</span>
+          </button>
+          <button className="back-btn-link" onClick={() => navigate('/')}>
+            Back to Home
+          </button>
+        </div>
       </div>
     </div>
   )

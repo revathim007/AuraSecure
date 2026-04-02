@@ -7,6 +7,7 @@ import Login from './Login.jsx';
 import Dashboard from './Dashboard.jsx';
 import HazardDetection from './HazardDetection.jsx';
 import SendAlerts from './SendAlerts.jsx';
+import Forecasting from './Forecasting.jsx';
 import Header from './Header.jsx';
 import './index.css';
 
@@ -25,6 +26,7 @@ function Main() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/hazard-detection" element={<HazardDetection />} />
         <Route path="/send-alerts" element={<SendAlerts />} />
+        <Route path="/forecasting" element={<Forecasting />} />
       </Routes>
     </>
   );

@@ -14,6 +14,7 @@ function HazardDetection() {
   const [prediction, setPrediction] = useState(null);
   const [predictionReason, setPredictionReason] = useState('');
   const [predictionStatement, setPredictionStatement] = useState('');
+  const [messageType, setMessageType] = useState(''); // 'error' or 'success'
   const user = JSON.parse(localStorage.getItem('currentUser'));
 
   const validateInput = (name, value) => {
@@ -49,7 +50,16 @@ function HazardDetection() {
   };
 
   const handleDetectHazard = () => {
+    // Check for any empty field
+    if (!gasLevel || !smokeLevel || !temperature) {
+      setMessageType('error');
+      setMessage('Please fill the info below');
+      setTimeout(() => setMessage(''), 4000);
+      return;
+    }
+
     if (Object.values(errors).some(error => error !== null)) {
+      setMessageType('error');
       setMessage('Please fix the errors before submitting.');
       setTimeout(() => setMessage(''), 3000);
       return;
@@ -67,11 +77,18 @@ function HazardDetection() {
         setPrediction(response.data.prediction);
         setPredictionReason(response.data.reason);
         setPredictionStatement(response.data.statement);
-        setMessage('Prediction successful!');
-        setTimeout(() => setMessage(''), 3000);
+        if (response.data.error) {
+          setMessageType('error');
+          setMessage(response.data.error);
+        } else {
+          setMessageType('success');
+          setMessage('Prediction successful!');
+        }
+        setTimeout(() => setMessage(''), 5000);
       })
       .catch(error => {
         console.error('Error making prediction:', error);
+        setMessageType('error');
         setMessage('Error: Could not get prediction.');
         setTimeout(() => setMessage(''), 3000);
       });
@@ -86,13 +103,14 @@ function HazardDetection() {
     }
   };
 
-  const isButtonDisabled = Object.values(errors).some(error => error !== null) || !gasLevel || !smokeLevel || !temperature;
+  const isButtonDisabled = Object.values(errors).some(error => error !== null);
 
   return (
-    <div className="hazard-detection-container">
+    <div className="hazard-detection-container app-container">
       <div className="hazard-detection-card">
-        <h1 className="hazard-detection-title">Hazard Detection</h1>
-        {message && <p className="submission-message">{message}</p>}
+        <h1 className="hazard-detection-title">Safety Check</h1>
+        <p className="forecasting-desc">Analyze real-time sensor data for potential hazards</p>
+        {message && <p className={`submission-message ${messageType}`}>{message}</p>}
         
         {prediction && (
           <div className={`prediction-summary ${prediction.toLowerCase()}`}>
@@ -115,24 +133,24 @@ function HazardDetection() {
           </div>
         )}
 
-        <div className="input-container">
-          <div className="input-group">
+        <div className="registration-form horizontal-form">
+          <div className="form-group">
             <label>Gas Level</label>
             <input type="text" value={gasLevel} onChange={handleInputChange(setGasLevel, 'gasLevel')} placeholder="0 - 1000" />
             {errors.gasLevel && <p className="error-text">{errors.gasLevel}</p>}
           </div>
-          <div className="input-group">
+          <div className="form-group">
             <label>Smoke Level</label>
             <input type="text" value={smokeLevel} onChange={handleInputChange(setSmokeLevel, 'smokeLevel')} placeholder="0 - 100" />
             {errors.smokeLevel && <p className="error-text">{errors.smokeLevel}</p>}
           </div>
-          <div className="input-group">
+          <div className="form-group">
             <label>Temperature</label>
             <input type="text" value={temperature} onChange={handleInputChange(setTemperature, 'temperature')} placeholder="-50 - 100" />
             {errors.temperature && <p className="error-text">{errors.temperature}</p>}
           </div>
         </div>
-        <button className="detect-hazard-btn" onClick={handleDetectHazard} disabled={isButtonDisabled}>Detect Hazard</button>
+        <button className="detect-hazard-btn register-submit" onClick={handleDetectHazard} disabled={isButtonDisabled}>Detect Hazard</button>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ class Alerts(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Alerts'
 
 class Chatbotlogs(models.Model):
@@ -16,7 +16,7 @@ class Chatbotlogs(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'ChatbotLogs'
 
 class Predictions(models.Model):
@@ -25,7 +25,7 @@ class Predictions(models.Model):
     confidence_score = models.FloatField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Predictions'
 
 class Userinputsensordata(models.Model):
@@ -38,7 +38,7 @@ class Userinputsensordata(models.Model):
     alarm = models.IntegerField()
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'UserInputSensorData'
 
 class Users(models.Model):
@@ -50,7 +50,7 @@ class Users(models.Model):
     created_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'Users'
 
 class SensorData1Tbl(models.Model):
@@ -63,5 +63,5 @@ class SensorData1Tbl(models.Model):
     alarm = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = '_Sensor_Data1TBL'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Lock, Eye, EyeOff } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
@@ -97,10 +97,13 @@ function Registration() {
   }
 
   return (
-    <div className="registration-container">
+    <div className="registration-container app-container">
       <div className="registration-card">
-        <h2 className="registration-title">AURASECURE Registration</h2>
-        <form onSubmit={handleSubmit} className="registration-form" noValidate>
+        <h2 className="registration-title">
+          <Lock size={24} className="lock-icon" /> AURASECURE
+        </h2>
+        <p className="registration-subtitle">Create your safety monitoring account</p>
+        <form onSubmit={handleSubmit} className="registration-form">
           <div className="form-group">
             <label>Full Name</label>
             <input 
@@ -180,12 +183,17 @@ function Registration() {
             {errors.password && <span className="error-text">{errors.password}</span>}
           </div>
 
-          <button type="submit" className="submit-btn">Register</button>
+          <button type="submit" className="submit-btn register-submit">Register</button>
         </form>
-        <button className="login-link-btn" onClick={() => navigate('/login')}>
-          Already have an account? Login
-        </button>
-        <button className="back-btn" onClick={() => navigate('/')}>Back to Home</button>
+        
+        <div className="form-footer">
+          <button className="login-link-btn" onClick={() => navigate('/login')}>
+            Already have an account? <span>Login</span>
+          </button>
+          <button className="back-btn-link" onClick={() => navigate('/')}>
+            Back to Home
+          </button>
+        </div>
       </div>
     </div>
   )

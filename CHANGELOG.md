@@ -231,20 +231,45 @@ This document tracks all changes with deep technical insights for interview prep
   - Modified [settings.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/core/settings.py) to dynamically read encryption and certificate trust settings from environment variables.
 - **Architectural Impact**: Ensures project continuity while managing infrastructure costs. The system is now ready for local development and testing on the user's workstation.
 
-#### **2026-04-02 10:30:00 | Backend | Model Integration & Automated Alerting**
-- **Action**: Implemented comprehensive prediction logic and automated database persistence for hazard detection.
-- **Technical Detail - Model Loading**: 
-  - Integrated `joblib` to load the pre-trained `GradientBoostingClassifier` model (`gradient_boosting_model.joblib`) within the Django runtime.
-- **Technical Detail - Prediction Logic**:
-  - Updated the `predict_hazard` view in [views.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/api/views.py) to process real-time sensor data (Gas, Smoke, Temperature) through the ML model.
-  - Implemented a 3-tier result mapping: `0: Safe`, `1: Warning`, `2: Alarm`.
-- **Technical Detail - Multi-Table Data Persistence**:
-  - **UserInputSensorData**: Automatically stores raw sensor readings, user context, and timestamps.
-  - **Predictions**: Stores the model's output and confidence score linked to the sensor entry for all prediction levels.
-  - **Alerts**: Restricted alert record creation to critical **Alarm (2)** status only, ensuring the alerts table only contains immediate emergency events.
-- **Architectural Impact**: This refinement ensures that while all model decisions are tracked in the `Predictions` table, the `Alerts` system remains focused exclusively on high-priority emergencies.
+#### **2026-04-02 12:00:00 | Project | Full UI Modernization & Theming**
+- **Action**: Completely redesigned the entire application with a soft, light pastel theme.
+- **Technical Detail - Global CSS Variables**: Defined a centralized palette in [index.css](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/index.css) using CSS variables for `--accent-purple`, `--accent-teal`, and `--bg-main`. This ensures "Single Source of Truth" for styling, making the theme easily maintainable and scalable.
+- **Technical Detail - Modern UI Components**:
+  - Implemented **Large Rounded Corners** (`24px`) and **Soft Shadows** (`0 8px 30px rgba(0,0,0,0.04)`) to create a professional "Card-based" layout.
+  - Used **Subtle Gradients** for primary buttons to add depth without being harsh.
+  - Added **Smooth Transitions** (`0.4s cubic-bezier`) to all interactive elements (hover, focus) for a high-quality feel.
+- **Technical Detail - Responsive Layouts**:
+  - Transitioned the Hazard Detection form to a **Horizontal Layout** using Flexbox, optimizing space for dashboard-style entry.
+  - Standardized the width and padding of all authentication cards (Login/Register) to `600px` for better readability.
 
-#### **2026-04-02 10:20:00 | Frontend | UI Label Update**
-- **Action**: Renamed the "Historical Data" navigation button to "Forecasting".
-- **Technical Detail**: Updated the [Header.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/Header.jsx) component to reflect the new label, aligning the UI with the project's predictive modeling focus.
-- **Architectural Impact**: This minor label change clarifies the intended functionality of the dashboard, moving from retrospective reporting to proactive forecasting.
+#### **2026-04-02 12:15:00 | Frontend | Branding & Security Visuals**
+- **Action**: Integrated security-focused branding across the application.
+- **Technical Detail - Icon Integration**: Added `Lock` icons from `lucide-react` beside every instance of "AURASECURE" (Home, Login, Register, Header). This builds user trust through consistent visual cues.
+- **Technical Detail - Functional Styling**:
+  - Styled the **Logout Button** in red to distinguish it as a high-intent action.
+  - Implemented an **In-field Password Toggle** (Eye icon) by using a relative-absolute positioning strategy, significantly improving the mobile and desktop login experience.
+
+#### **2026-04-02 12:30:00 | Full-Stack | Enhanced Validation & Error Handling**
+- **Action**: Refined form validation and real-time user feedback.
+- **Technical Detail - Individual Field Validation**: Updated the submission logic in [HazardDetection.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/HazardDetection.jsx) to identify and alert users about specific empty fields (e.g., "Please fill in Gas Level").
+- **Technical Detail - Color-Coded Messaging**: Implemented a `messageType` state to dynamically apply CSS classes (`.error` or `.success`).
+  - **Errors**: Red text/background for missing data.
+  - **Success**: Green text/background for successful predictions.
+- **Technical Detail - Automated UI Cleanup**: Used `setTimeout` to automatically clear status messages after 4-5 seconds, reducing UI clutter.
+
+#### **2026-04-02 12:45:00 | Frontend | Advanced Analytics Visualization**
+- **Action**: Refined the Dashboard and Forecasting data presentation.
+- **Technical Detail - Chart Customization**: Updated `Chart.js` configurations in [Dashboard.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/Dashboard.jsx) to match the pastel theme (Purple for Gas, Red for Temp, Gray for Smoke).
+- **Technical Detail - Typography Overhaul**: Increased font sizes for critical safety metrics (Total Records, Warnings, Alerts) to **2.5rem** with extra-bold weights to ensure they are the primary focus of the user's attention.
+- **Technical Detail - Alert List Refinement**: Transformed the alerts display into a modern vertical list with **Circular Status Icons** and high-contrast labels for immediate situational awareness.
+
+#### **2026-04-02 13:00:00 | Backend | Stability & Model Loading Fixes**
+- **Action**: Fixed critical runtime errors and improved system reliability.
+- **Technical Detail - Dynamic Path Resolution**: Fixed a `FileNotFoundError` in [views.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/api/views.py) by using `pathlib` and `os.path.join(BASE_DIR, ...)` instead of hardcoded relative paths. This ensures the ML model loads correctly regardless of where the server is started from.
+- **Technical Detail - Database Management**: Changed model metadata from `managed = False` to `managed = True`. This allowed Django to generate and apply migrations, ensuring the SSMS database schema stays in sync with the Python models.
+
+#### **2026-04-02 13:15:00 | Frontend | Home Page Immersive Branding**
+- **Action**: Implemented a full-screen background image for the welcome page.
+- **Technical Detail - Asset Management**: Configured the Vite `public/` directory to serve `background.jpg` correctly.
+- **Technical Detail - Layering & Contrast**: Used a CSS **Pseudo-element overlay** (`::before`) with a semi-transparent dark tint to ensure white branding text remains legible over complex industrial images.
+- **Technical Detail - Layout Consistency**: Wrapped the entire app in an `.app-container` class to maintain consistent background behavior and scroll physics across all pages.
