@@ -1,8 +1,8 @@
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserSerializer, UserInputSensorDataSerializer
+from .models import Userinputsensordata, Users, Predictions, Alerts
 from rest_framework.decorators import api_view
-from .models import Userinputsensordata, Users
 import joblib
 import pandas as pd
 from django.utils import timezone
@@ -50,7 +50,7 @@ def predict_hazard(request):
     # Save to UserInputSensorData table
     try:
         user_obj = Users.objects.get(id=user_id)
-        Userinputsensordata.objects.create(
+        user_sensor_entry = Userinputsensordata.objects.create(
             user=user_obj,
             timestamp=timezone.now(),
             gas_level=gas_level,
@@ -59,11 +59,26 @@ def predict_hazard(request):
             pressure=0.0,  # Default since it's not provided by frontend
             alarm=prediction
         )
+
+        # Save to Predictions table
+        Predictions.objects.create(
+            user_sensor=user_sensor_entry,
+            predicted_alarm=prediction,
+            confidence_score=1.0 # Placeholder for model confidence
+        )
+
+        # If Alarm or Warning, save to Alerts table
+        if prediction > 0:
+            Alerts.objects.create(
+                user_sensor=user_sensor_entry,
+                message=reason,
+                created_at=timezone.now()
+            )
+
     except Users.DoesNotExist:
-        # If user is not found, we still return prediction but log/handle the error
         print(f"Error: User with ID {user_id} not found during data persistence.")
     except Exception as e:
-        print(f"Error saving sensor data: {str(e)}")
+        print(f"Error during hazard detection persistence: {str(e)}")
 
     return Response({'prediction': result, 'reason': reason, 'statement': statement}, status=status.HTTP_200_OK)
 

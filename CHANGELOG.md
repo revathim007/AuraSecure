@@ -98,7 +98,7 @@ This document tracks all changes with deep technical insights for interview prep
   - On successful login, the application stores the user object in `localStorage` under `currentUser`. This simulates a session token for personalizing the dashboard.
 - **Technical Detail - Dashboard Component**:
   - Created [Dashboard.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/Dashboard.jsx) which dynamically displays user-specific information (Full Name, Email, Contact) retrieved from the active session.
-- **Technical Detail - **Security (Logout)**: Implemented a `handleLogout` function that clears the `currentUser` from storage and redirects to the login page, ensuring session termination.
+- **Technical Detail - Security (Logout)**: Implemented a `handleLogout` function that clears the `currentUser` from storage and redirects to the login page, ensuring session termination.
 - **Technical Detail - UI/UX Navigation Enhancement**:
   - Added a "Already have an account? Login" clickable label in [Registration.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/Registration.jsx) to improve the bidirectional navigation flow between authentication pages.
 - **Technical Detail - Routing Expansion**:
@@ -180,7 +180,7 @@ This document tracks all changes with deep technical insights for interview prep
 - **Technical Detail - Backend API**: Created a new `api/user-input-sensor-data/` endpoint to handle the creation of new sensor data entries.
 - **Technical Detail - Serializer**: Created a `UserInputSensorDataSerializer` to validate and serialize the incoming sensor data.
 - **Technical Detail - Frontend Integration**: Modified `HazardDetection.jsx` to send the sensor data to the new API endpoint when the "Detect Hazard" button is clicked.
-- Technical Detail - Validation: Implemented comprehensive client-side validation in `HazardDetection.jsx` to ensure the data is in the correct format before being sent to the backend.
+- **Technical Detail - Validation**: Implemented comprehensive client-side validation in `HazardDetection.jsx` to ensure the data is in the correct format before being sent to the backend.
 
 #### **2026-04-01 16:15:00 | Machine Learning | Gradient Boosting Hazard Detection**
 - **Action**: Upgraded the hazard detection system from a simple threshold-based check to a multi-tiered predictive model.
@@ -202,7 +202,7 @@ This document tracks all changes with deep technical insights for interview prep
 - **Technical Detail - Multi-Value Logic**: Implemented `{' and '.join(reasons)}` to handle scenarios where multiple sensors are simultaneously elevated, ensuring clear and accurate reporting.
 - **Technical Detail - Data Persistence**: Integrated automatic saving of sensor readings and their corresponding predictions into the `UserInputSensorData` table during the prediction request cycle. This ensures a historical record of all hazard detection attempts.
 
-#### **2026-04-01 17:00:00 | Frontend | Emergency Alert Dispatch System** Safety UI/UX**
+#### **2026-04-01 16:45:00 | Frontend | Proactive Safety UI/UX**
 - **Action**: Overhauled the "Hazard Detection" interface to emphasize status visibility and emergency instructions.
 - **Technical Detail - Visual Hierarchy**:
   - Integrated **Lucide Icons** (`AlertCircle`, `AlertTriangle`, `ShieldCheck`) in [HazardDetection.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/HazardDetection.jsx) for instant cognitive recognition of safety status.
@@ -230,3 +230,21 @@ This document tracks all changes with deep technical insights for interview prep
   - Updated [.env](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/.env) to use `localhost` as the database host and added flexibility for local connection settings (`DB_TRUST_CERT`, `DB_ENCRYPT`).
   - Modified [settings.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/core/settings.py) to dynamically read encryption and certificate trust settings from environment variables.
 - **Architectural Impact**: Ensures project continuity while managing infrastructure costs. The system is now ready for local development and testing on the user's workstation.
+
+#### **2026-04-02 10:30:00 | Backend | Model Integration & Automated Alerting**
+- **Action**: Implemented comprehensive prediction logic and automated database persistence for hazard detection.
+- **Technical Detail - Model Loading**: 
+  - Integrated `joblib` to load the pre-trained `GradientBoostingClassifier` model (`gradient_boosting_model.joblib`) within the Django runtime.
+- **Technical Detail - Prediction Logic**:
+  - Updated the `predict_hazard` view in [views.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/api/views.py) to process real-time sensor data (Gas, Smoke, Temperature) through the ML model.
+  - Implemented a 3-tier result mapping: `0: Safe`, `1: Warning`, `2: Alarm`.
+- **Technical Detail - Multi-Table Data Persistence**:
+  - **UserInputSensorData**: Automatically stores raw sensor readings, user context, and timestamps.
+  - **Predictions**: Stores the model's output and confidence score linked to the sensor entry.
+  - **Alerts**: Automatically creates an alert record with a descriptive message whenever a `Warning` or `Alarm` status is predicted.
+- **Architectural Impact**: This update transforms the API from a simple prediction service into a robust monitoring system that maintains a complete audit trail of sensor history, model decisions, and triggered alerts.
+
+#### **2026-04-02 10:20:00 | Frontend | UI Label Update**
+- **Action**: Renamed the "Historical Data" navigation button to "Forecasting".
+- **Technical Detail**: Updated the [Header.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/Header.jsx) component to reflect the new label, aligning the UI with the project's predictive modeling focus.
+- **Architectural Impact**: This minor label change clarifies the intended functionality of the dashboard, moving from retrospective reporting to proactive forecasting.
