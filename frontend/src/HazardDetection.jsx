@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { AlertTriangle, ShieldCheck, AlertCircle } from 'lucide-react';
+import { AlertTriangle, ShieldCheck, AlertCircle, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 function HazardDetection() {
+  const navigate = useNavigate();
   const [gasLevel, setGasLevel] = useState('');
   const [smokeLevel, setSmokeLevel] = useState('');
   const [temperature, setTemperature] = useState('');
@@ -102,6 +104,14 @@ function HazardDetection() {
             <div className="prediction-statement-box">
               <p className="prediction-statement">{predictionStatement}</p>
             </div>
+            {(prediction === 'Alarm' || prediction === 'Warning') && (
+              <button 
+                className="send-alerts-link-btn" 
+                onClick={() => navigate('/send-alerts', { state: { prediction, reason: predictionReason } })}
+              >
+                <Send size={18} /> Send Alerts
+              </button>
+            )}
           </div>
         )}
 

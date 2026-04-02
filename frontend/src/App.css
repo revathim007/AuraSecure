@@ -65,6 +65,118 @@
   animation: pulse 1.5s infinite;
 }
 
+.send-alerts-link-btn {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  background-color: #8B4513;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.send-alerts-link-btn:hover {
+  background-color: #5D4037;
+}
+
+/* Send Alerts Page */
+.send-alerts-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.send-alerts-card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.send-alerts-title {
+  color: #8B4513;
+  margin: 0;
+  font-size: 2rem;
+}
+
+.alert-details-box {
+  background-color: #fdf5e6;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  border-left: 5px solid #8B4513;
+}
+
+.alert-details-box h2 {
+  margin-top: 0;
+}
+
+.alert-details-box span.alarm { color: #dc3545; }
+.alert-details-box span.warning { color: #ffc107; }
+
+.alert-action-section {
+  text-align: center;
+}
+
+.action-description {
+  margin-bottom: 25px;
+  color: #666;
+}
+
+.send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+  background-color: #dc3545;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+  background-color: #b02a37;
+  transform: scale(1.02);
+}
+
+.send-btn.sent {
+  background-color: #28a745;
+  cursor: default;
+  transform: none;
+}
+
+.success-msg {
+  margin-top: 15px;
+  color: #28a745;
+  font-weight: bold;
+}
+
 @keyframes pulse {
   0% { opacity: 1; }
   50% { opacity: 0.6; }

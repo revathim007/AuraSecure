@@ -200,8 +200,9 @@ This document tracks all changes with deep technical insights for interview prep
 - **Technical Detail - Reason Extraction**: Developed a `get_prediction_reason` function in [views.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/api/views.py) that dynamically identifies which specific sensors (Gas, Smoke, or Temp) triggered the current status.
 - **Technical Detail - Actionable Statements**: Added a `statement` field to the API response, providing users with immediate instructions (e.g., "EVACUATE IMMEDIATELY!" for Alarms or "Monitor levels closely" for Warnings).
 - **Technical Detail - Multi-Value Logic**: Implemented `{' and '.join(reasons)}` to handle scenarios where multiple sensors are simultaneously elevated, ensuring clear and accurate reporting.
+- **Technical Detail - Data Persistence**: Integrated automatic saving of sensor readings and their corresponding predictions into the `UserInputSensorData` table during the prediction request cycle. This ensures a historical record of all hazard detection attempts.
 
-#### **2026-04-01 16:45:00 | Frontend | Proactive Safety UI/UX**
+#### **2026-04-01 17:00:00 | Frontend | Emergency Alert Dispatch System** Safety UI/UX**
 - **Action**: Overhauled the "Hazard Detection" interface to emphasize status visibility and emergency instructions.
 - **Technical Detail - Visual Hierarchy**:
   - Integrated **Lucide Icons** (`AlertCircle`, `AlertTriangle`, `ShieldCheck`) in [HazardDetection.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/HazardDetection.jsx) for instant cognitive recognition of safety status.
@@ -211,3 +212,21 @@ This document tracks all changes with deep technical insights for interview prep
   - Implemented conditional CSS classes in [App.css](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/App.css) to apply distinct borders and backgrounds for each status summary.
 - **Technical Detail - Validation Update**: Relaxed the temperature validation threshold to 100°C to accommodate high-risk monitoring scenarios.
 - **Architectural Impact**: The UI now acts as a proactive safety dashboard rather than just a data entry form, providing users with both the "What" (Status) and the "Why" (Reason) alongside clear instructions on the "How" (Action).
+
+#### **2026-04-01 17:00:00 | Frontend | Emergency Alert Dispatch System**
+- **Action**: Implemented a dedicated alerting system to allow users to escalate hazard detections.
+- **Technical Detail - New Component**: Created [SendAlerts.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/SendAlerts.jsx) as a centralized hub for dispatching emergency notifications.
+- **Technical Detail - Routing**: Registered the `/send-alerts` route in [main.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/main.jsx) for unified navigation.
+- **Technical Detail - Data Transfer**: Utilized `navigate` with `state` in [HazardDetection.jsx](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/HazardDetection.jsx) to pass hazard context (prediction & reason) to the alert center without redundant API calls.
+- **Technical Detail - UI/UX Polish**:
+  - Implemented a "Send Alerts" button in the Hazard Detection summary, conditionally visible only during **Alarm** or **Warning** states.
+  - Added a simulated dispatch workflow with visual feedback (CheckCircle icon, status changes) to provide user reassurance during emergencies.
+  - Applied specialized styling in [App.css](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/frontend/src/App.css) for the Alert Center, using a high-contrast emergency theme.
+- **Architectural Impact**: This feature closes the loop between hazard identification and incident response, transforming the app into an end-to-end safety management platform.
+
+#### **2026-04-01 17:15:00 | Database | Transition to Local SSMS**
+- **Action**: Migrated the database connection from Azure SQL Database to local SQL Server (SSMS) due to billing/resource reasons.
+- **Technical Detail - Environment Update**: 
+  - Updated [.env](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/.env) to use `localhost` as the database host and added flexibility for local connection settings (`DB_TRUST_CERT`, `DB_ENCRYPT`).
+  - Modified [settings.py](file:///d:/Revathi/Biz%20Metric%20Internship/AuraSecureProject/backend/core/settings.py) to dynamically read encryption and certificate trust settings from environment variables.
+- **Architectural Impact**: Ensures project continuity while managing infrastructure costs. The system is now ready for local development and testing on the user's workstation.

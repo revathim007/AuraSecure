@@ -2,9 +2,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserSerializer, UserInputSensorDataSerializer
 from rest_framework.decorators import api_view
-from .models import Userinputsensordata
+from .models import Userinputsensordata, Users
 import joblib
 import pandas as pd
+from django.utils import timezone
 
 # Load the trained model
 model = joblib.load('ml/gradient_boosting_model.joblib')
@@ -33,6 +34,7 @@ def predict_hazard(request):
     gas_level = request.data.get('gas_level', 0)
     smoke_level = request.data.get('smoke_level', 0)
     temperature = request.data.get('temperature', 0)
+    user_id = request.data.get('user')
 
     df = pd.DataFrame({
         'gas_level': [gas_level],
@@ -40,9 +42,28 @@ def predict_hazard(request):
         'temperature': [temperature]
     })
 
-    prediction = model.predict(df)[0]
+    # Perform prediction
+    prediction = int(model.predict(df)[0])
     result = {0: 'Safe', 1: 'Warning', 2: 'Alarm'}.get(prediction, 'Error')
     reason, statement = get_prediction_reason(prediction, gas_level, smoke_level, temperature)
+
+    # Save to UserInputSensorData table
+    try:
+        user_obj = Users.objects.get(id=user_id)
+        Userinputsensordata.objects.create(
+            user=user_obj,
+            timestamp=timezone.now(),
+            gas_level=gas_level,
+            smoke_level=smoke_level,
+            temperature=temperature,
+            pressure=0.0,  # Default since it's not provided by frontend
+            alarm=prediction
+        )
+    except Users.DoesNotExist:
+        # If user is not found, we still return prediction but log/handle the error
+        print(f"Error: User with ID {user_id} not found during data persistence.")
+    except Exception as e:
+        print(f"Error saving sensor data: {str(e)}")
 
     return Response({'prediction': result, 'reason': reason, 'statement': statement}, status=status.HTTP_200_OK)
 

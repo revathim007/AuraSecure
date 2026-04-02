@@ -87,14 +87,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'mssql',
         'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'USER': '',   # keep empty for Windows Auth
+        'PASSWORD': '',
         'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'PORT': '',
+
         'OPTIONS': {
-            'driver': 'ODBC Driver 18 for SQL Server',
-            'encrypt': 'yes',
-            'timeout': 30,
+            'driver': 'ODBC Driver 17 for SQL Server',  # safer for local
+            'trusted_connection': 'yes',   # 🔥 IMPORTANT
         },
     }
 }
