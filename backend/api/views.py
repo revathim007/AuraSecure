@@ -67,8 +67,8 @@ def predict_hazard(request):
             confidence_score=1.0 # Placeholder for model confidence
         )
 
-        # If Alarm or Warning, save to Alerts table
-        if prediction > 0:
+        # If Alarm (level 2), save to Alerts table
+        if prediction == 2:
             Alerts.objects.create(
                 user_sensor=user_sensor_entry,
                 message=reason,

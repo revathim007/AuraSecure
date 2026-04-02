@@ -240,9 +240,9 @@ This document tracks all changes with deep technical insights for interview prep
   - Implemented a 3-tier result mapping: `0: Safe`, `1: Warning`, `2: Alarm`.
 - **Technical Detail - Multi-Table Data Persistence**:
   - **UserInputSensorData**: Automatically stores raw sensor readings, user context, and timestamps.
-  - **Predictions**: Stores the model's output and confidence score linked to the sensor entry.
-  - **Alerts**: Automatically creates an alert record with a descriptive message whenever a `Warning` or `Alarm` status is predicted.
-- **Architectural Impact**: This update transforms the API from a simple prediction service into a robust monitoring system that maintains a complete audit trail of sensor history, model decisions, and triggered alerts.
+  - **Predictions**: Stores the model's output and confidence score linked to the sensor entry for all prediction levels.
+  - **Alerts**: Restricted alert record creation to critical **Alarm (2)** status only, ensuring the alerts table only contains immediate emergency events.
+- **Architectural Impact**: This refinement ensures that while all model decisions are tracked in the `Predictions` table, the `Alerts` system remains focused exclusively on high-priority emergencies.
 
 #### **2026-04-02 10:20:00 | Frontend | UI Label Update**
 - **Action**: Renamed the "Historical Data" navigation button to "Forecasting".
